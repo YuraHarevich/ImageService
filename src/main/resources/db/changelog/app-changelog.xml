@@ -11,8 +11,6 @@
 
     <include file="v1/changesets/00-changeset-create-schema.xml" relativeToChangelogFile="true"/>
 
-    <include file="v1/changesets/02-changeset-create-user-table.xml" relativeToChangelogFile="true"/>
-
     <include file="v1/changesets/03-changeset-create-like-table.xml" relativeToChangelogFile="true"/>
 
     <include file="v1/changesets/04-changeset-create-post-table.xml" relativeToChangelogFile="true"/>

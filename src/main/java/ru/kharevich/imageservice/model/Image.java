@@ -32,6 +32,9 @@ public class Image {
     @CreationTimestamp
     private LocalDateTime uploadedAt;
 
+    @Column(name = "parent_entity_id", nullable = false)
+    private UUID parentEntityId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "image_type", nullable = false)
     private ImageType imageType;

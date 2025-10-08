@@ -1,6 +1,6 @@
 services:
-  drivers_postgresql:
-    container_name: ms_drivers_pg_sql
+  images_sql:
+    container_name: ms_image_sql
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -14,8 +14,24 @@ services:
       - microservices-net
     restart: unless-stopped
 
+  users_sql:
+    container_name: ms_users_sql
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - users_psql:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
 networks:
   microservices-net:
     driver: bridge
 volumes:
   images_psql:
+  users_psql:

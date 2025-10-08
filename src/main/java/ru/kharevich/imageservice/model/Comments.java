@@ -28,11 +28,10 @@ public class Comments {
     @Column(name = "payload", nullable = false)
     private String payload;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "poster_id")
-    private User poster;
+    @Column(name = "poster_id", nullable = false)
+    private UUID posterId;
 
-    @Column(name = "postId", nullable = false)
+    @Column(name = "post_id", nullable = false)
     private UUID postId;
 
     @Column(name = "leaved_at", nullable = false)

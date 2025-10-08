@@ -6,6 +6,3 @@ CREATE TABLE gallery.comments
     post_id   UUID NOT NULL,
     poster_id UUID NOT NULL
 );
-
-ALTER TABLE gallery.comments
-    ADD CONSTRAINT uk6tpd8p9v0iaw9ukuvh1gk7yj4 UNIQUE (poster_id);

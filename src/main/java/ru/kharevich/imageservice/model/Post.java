@@ -22,8 +22,4 @@ public class Post {
     @Column(name = "text", nullable = false)
     private String text;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private List<Image> images;
-
 }
