@@ -44,5 +44,4 @@ public class ImageControllerImpl implements ImageController {
     public ImageResponse uploadImage(@Valid ImageRequest imageRequest) {
         return imageService.save(imageRequest);
     }
-
 }
