@@ -13,8 +13,6 @@
 
     <include file="v1/changesets/03-changeset-create-like-table.xml" relativeToChangelogFile="true"/>
 
-    <include file="v1/changesets/04-changeset-create-post-table.xml" relativeToChangelogFile="true"/>
-
     <include file="v1/changesets/05-changeset-create-comments.xml" relativeToChangelogFile="true"/>
 
     <include file="v1/changesets/01-changeset-create-image-table.xml" relativeToChangelogFile="true"/>

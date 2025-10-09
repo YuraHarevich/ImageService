@@ -25,8 +25,8 @@ public class Image {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "uploadedAt", nullable = false)
     @CreationTimestamp
