@@ -1,13 +1,15 @@
+version: '3.8'
+
 services:
   images_sql:
     container_name: ms_image_sql
-    image: postgres
+    image: postgres:13
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: images
     volumes:
-      - images_psql:/data/postgres
+      - images_psql:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -16,15 +18,48 @@ services:
 
   users_sql:
     container_name: ms_users_sql
-    image: postgres
+    image: postgres:13
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
     volumes:
-      - users_psql:/data/postgres
+      - users_psql:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  posts_sql:
+    container_name: ms_posts_sql
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: posts
+    volumes:
+      - posts_psql:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  localstack:
+    container_name: ms_localstack
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=0
+      - DATA_DIR=/var/lib/localstack/data
+      - PERSISTENCE=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack_data:/var/lib/localstack"
     networks:
       - microservices-net
     restart: unless-stopped
@@ -32,6 +67,8 @@ services:
 networks:
   microservices-net:
     driver: bridge
+
 volumes:
   images_psql:
   users_psql:
+  posts_psql:
