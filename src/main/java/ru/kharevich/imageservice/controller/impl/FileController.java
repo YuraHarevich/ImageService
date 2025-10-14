@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.kharevich.imageservice.dto.FileResponse;
+import ru.kharevich.imageservice.dto.response.FileResponse;
 import ru.kharevich.imageservice.service.impl.S3StorageService;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 

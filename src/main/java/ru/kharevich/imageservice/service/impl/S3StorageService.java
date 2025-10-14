@@ -26,7 +26,6 @@ import java.util.UUID;
 public class S3StorageService implements S3StorageServiceContract {
 
     private final S3Client s3Client;
-    private final S3Presigner s3Presigner;
     private final S3Properties s3Properties;
 
 

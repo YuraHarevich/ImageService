@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.kharevich.imageservice.dto.ErrorMessage;
+import ru.kharevich.imageservice.dto.transferObjects.ErrorMessage;
 import ru.kharevich.imageservice.exception.FileNotFoundException;
 import ru.kharevich.imageservice.exception.FileUploadException;
 import ru.kharevich.imageservice.exception.ImageNotFoundException;

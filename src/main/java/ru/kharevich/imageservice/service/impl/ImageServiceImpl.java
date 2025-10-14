@@ -17,6 +17,7 @@ import ru.kharevich.imageservice.util.mapper.ImageMapper;
 import ru.kharevich.imageservice.util.validation.ImageValidationService;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,14 +56,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public ImageResponse save(ImageRequest imageRequest) {
-        if (imageRequest.name() == null) {
-            String name = generateFilename(imageRequest.file());
-            imageRequest = new ImageRequest(imageRequest.imageType(),
-                    imageRequest.parentEntityId(),
-                    imageRequest.file(),
-                    name);
-        }
-        String url = s3StorageService.uploadFile(imageRequest.file(), imageRequest.name());
+        String url = s3StorageService.uploadFile(imageRequest.file(), imageRequest.file().getOriginalFilename());
         Image image = imageMapper.toEntity(imageRequest, url);
         imageRepository.saveAndFlush(image);
         ImageResponse response;
@@ -72,6 +66,27 @@ public class ImageServiceImpl implements ImageService {
             throw new FileUploadException("Unable to upload file");
         }
         return response;
+    }
+
+    @Override
+    public ImageResponse getByParentId(UUID parentId) {
+        //TODO переделать
+        List<Image> images =  imageRepository.findByParentEntityId(parentId);
+        if(images.isEmpty())
+            throw new ImageNotFoundException("no image");
+        Image image = images.getFirst();
+        byte[] file = s3StorageService.downloadFile(image.getName());
+        return imageMapper.toResponse(image, file);
+    }
+
+    @Override
+    public void deleteByParentId(UUID parentId) {
+        List<Image> images =  imageRepository.findByParentEntityId(parentId);
+        images.stream().forEach(image -> {
+            imageRepository.deleteById(image.getId());
+            s3StorageService.deleteFile(image.getName());
+                }
+        );
     }
 
     private String generateFilename(MultipartFile file) {

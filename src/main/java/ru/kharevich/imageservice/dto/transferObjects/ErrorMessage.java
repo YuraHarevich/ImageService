@@ -1,4 +1,4 @@
-package ru.kharevich.imageservice.dto;
+package ru.kharevich.imageservice.dto.transferObjects;
 
 import lombok.Builder;
 import lombok.Data;

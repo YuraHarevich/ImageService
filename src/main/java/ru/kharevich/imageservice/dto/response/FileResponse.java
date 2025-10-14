@@ -1,4 +1,4 @@
-package ru.kharevich.imageservice.dto;
+package ru.kharevich.imageservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

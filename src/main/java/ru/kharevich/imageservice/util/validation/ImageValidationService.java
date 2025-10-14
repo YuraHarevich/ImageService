@@ -24,7 +24,6 @@ public class ImageValidationService {
                 .orElseThrow(() -> exception);
         return image;
     }
-
 //    public void findByUsernameThrowsExceptionIfExists(String username, RuntimeException exception) {
 //        Optional<User> userOpt = userRepository.findByUsername(username);
 //        if (userOpt.isPresent()) {

@@ -16,4 +16,7 @@ public interface ImageService {
 
     ImageResponse save(ImageRequest imageRequest);
 
+    ImageResponse getByParentId(@Valid UUID id);
+
+    void deleteByParentId(@Valid UUID id);
 }
