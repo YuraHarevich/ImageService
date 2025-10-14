@@ -18,6 +18,6 @@ public interface ImageMapper {
 
     ImageResponse toResponse(Image image, byte[] file);
 
-    Image toEntity(ImageRequest imageRequest, String url);
+    Image toEntity(ImageRequest imageRequest, String url, String name);
 
 }

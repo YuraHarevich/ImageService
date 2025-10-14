@@ -1,7 +1,6 @@
 package ru.kharevich.imageservice.controller.impl;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,12 +59,11 @@ public class ImageControllerImpl implements ImageController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ImageResponse uploadImage(
+    public ImageResponse uploadImage(
             @RequestPart("imageType") String imageType,
             @RequestPart("parentEntityId") String parentEntityId,
-            @RequestPart("file") MultipartFile file,
-            @RequestPart(value = "name", required = false) String name) {
-        ImageRequest imageRequest = new ImageRequest(ImageType.POST_ATTACHMENT, UUID.fromString(parentEntityId), file, name);
+            @RequestPart("file") MultipartFile file) {
+        ImageRequest imageRequest = new ImageRequest(ImageType.POST_ATTACHMENT, UUID.fromString(parentEntityId), file);
         return imageService.save(imageRequest);
     }
 

@@ -15,9 +15,7 @@ public record ImageRequest(
         UUID parentEntityId,
 
         @NotNull(message = "File is required")
-        MultipartFile file,
-
-        String name
+        MultipartFile file
 ) {
 
 }

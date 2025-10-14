@@ -56,8 +56,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public ImageResponse save(ImageRequest imageRequest) {
-        String url = s3StorageService.uploadFile(imageRequest.file(), imageRequest.file().getOriginalFilename());
-        Image image = imageMapper.toEntity(imageRequest, url);
+        String name = generateFilename(imageRequest);
+        String url = s3StorageService.uploadFile(imageRequest.file(), name);
+        Image image = imageMapper.toEntity(imageRequest, url, name);
         imageRepository.saveAndFlush(image);
         ImageResponse response;
         try {
@@ -89,19 +90,8 @@ public class ImageServiceImpl implements ImageService {
         );
     }
 
-    private String generateFilename(MultipartFile file) {
-        String extension = getFileExtension(file);
-        long timestamp = System.currentTimeMillis();
-        int random = ThreadLocalRandom.current().nextInt(1000, 9999);
-        return timestamp + random + extension;
-    }
-
-    private String getFileExtension(MultipartFile file) {
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename != null && originalFilename.contains(".")) {
-            return originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
-        return "";
+    private String generateFilename(ImageRequest request) {
+        return request.file().getOriginalFilename() + "_" + request.parentEntityId().toString();
     }
 
 }

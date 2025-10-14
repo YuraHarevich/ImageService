@@ -1,9 +1,14 @@
 package ru.kharevich.imageservice.controller.api;
 
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.model.ImageType;
 
 import java.util.UUID;
 
@@ -15,6 +20,10 @@ public interface ImageController {
 
     void deleteImageById(@Valid UUID id);
 
-    ImageResponse uploadImage(@Valid ImageRequest imageRequest);
+    //ImageResponse uploadImage(@Valid ImageRequest imageRequest);
 
+    ImageResponse uploadImage(
+            @RequestPart("imageType") String imageType,
+            @RequestPart("parentEntityId") String parentEntityId,
+            @RequestPart("file") MultipartFile file);
 }
