@@ -8,19 +8,22 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        default_schema: gallery
+        default_schema: gallery_test
+        hbm2ddl.auto: create-drop
   liquibase:
-    analytics-enabled: false
+    enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5434/testdb
     username: testuser
     password: testpass
+    hikari:
+      maximum-pool-size: 3
 
 app:
   s3:
     endpoint: http://localhost:4566
-    bucket-name: images-bucket
+    bucket-name: test-images-bucket
     region: us-east-1
     access-key: test
     secret-key: test
