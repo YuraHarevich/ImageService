@@ -53,13 +53,24 @@ services:
       - "4566:4566"
     environment:
       - SERVICES=s3
-      - DEBUG=0
-      - DATA_DIR=/var/lib/localstack/data
+      - DEBUG=1
       - PERSISTENCE=1
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./localstack_data:/var/lib/localstack"
+      - "./localstack/init-scripts:/etc/localstack/init/ready.d"
+      - "./localstack/icons:/etc/localstack/icons"
+    command: >
+      sh -c "
+        echo 'Making scripts executable...' &&
+        find /etc/localstack/init/ready.d -name '*.sh' -exec chmod +x {} \; &&
+        echo 'Starting LocalStack...' &&
+        /usr/bin/localstack start
+      "
     networks:
       - microservices-net
     restart: unless-stopped

@@ -4,19 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 import ru.kharevich.imageservice.exception.FileNotFoundException;
 import ru.kharevich.imageservice.exception.FileUploadException;
+import ru.kharevich.imageservice.exception.StaticIconUploadException;
 import ru.kharevich.imageservice.service.S3StorageServiceContract;
+import ru.kharevich.imageservice.util.S3Utils;
 import ru.kharevich.imageservice.util.properties.S3Properties;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,6 +86,60 @@ public class S3StorageService implements S3StorageServiceContract {
         } catch (S3Exception e) {
             log.error("Error downloading file: {}", e.getMessage());
             throw new FileNotFoundException("File not found: " + filename);
+        }
+    }
+
+    public List<FileTransferEntity> downloadSvgIcons() {
+        String bucketName = s3Properties.getBucketName();
+        List<FileTransferEntity> icons = new ArrayList<>();
+        try {
+            ListObjectsV2Request iconList = ListObjectsV2Request.builder()
+                    .bucket(bucketName)
+                    .prefix("icons/")
+                    .build();
+
+            ListObjectsV2Response listResponse = s3Client.listObjectsV2(iconList);
+
+            if (listResponse.contents().isEmpty()) {
+                throw new StaticIconUploadException("there are no icons");
+            }
+            for (S3Object s3Object : listResponse.contents()) {
+                String s3Key = s3Object.key();
+                if (S3Utils.isSvgIcon(s3Key)) {
+                    try {
+                        byte[] fileContent = downloadFileByKey(s3Key);
+                        String fileName = S3Utils.extractFileName(s3Key);
+                        icons.add(new FileTransferEntity(fileContent, fileName));
+                    } catch (Exception e) {
+                        log.error("Failed to download icon: {}, error: {}", s3Key, e.getMessage());
+                    }
+                } else {
+                    log.debug("Skipping non-SVG file: {}", s3Key);
+                }
+            }
+            return icons;
+        } catch (S3Exception e) {
+            log.error("S3 error while downloading SVG icons: {}", e.getMessage());
+            throw new StaticIconUploadException("Failed to download SVG icons from S3");
+        } catch (Exception e) {
+            log.error("Unexpected error while downloading SVG icons: {}", e.getMessage());
+            throw new StaticIconUploadException("Unexpected error during SVG icons download");
+        }
+    }
+
+    private byte[] downloadFileByKey(String s3Key) {
+        String bucketName = s3Properties.getBucketName();
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(s3Key)
+                    .build();
+
+            return s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
+
+        } catch (S3Exception e) {
+            log.error("Error downloading file from S3: {}, key: {}", e.getMessage(), s3Key);
+            throw new RuntimeException("Failed to download file: " + s3Key, e);
         }
     }
 

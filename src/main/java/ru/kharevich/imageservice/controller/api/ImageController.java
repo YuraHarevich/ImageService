@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 import ru.kharevich.imageservice.model.ImageType;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ImageController {
@@ -20,10 +22,10 @@ public interface ImageController {
 
     void deleteImageById(@Valid UUID id);
 
-    //ImageResponse uploadImage(@Valid ImageRequest imageRequest);
+    List<FileTransferEntity> downloadSvgIcons();
 
     ImageResponse uploadImage(
             @RequestPart("imageType") String imageType,
             @RequestPart("parentEntityId") String parentEntityId,
-            @RequestPart("file") MultipartFile file);
+            @RequestPart("file") List<MultipartFile> file);
 }

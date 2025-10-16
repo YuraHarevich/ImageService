@@ -10,6 +10,7 @@ import ru.kharevich.imageservice.dto.transferObjects.ErrorMessage;
 import ru.kharevich.imageservice.exception.FileNotFoundException;
 import ru.kharevich.imageservice.exception.FileUploadException;
 import ru.kharevich.imageservice.exception.ImageNotFoundException;
+import ru.kharevich.imageservice.exception.StaticIconUploadException;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             S3Exception.class,
-            FileUploadException.class
+            FileUploadException.class,
+            StaticIconUploadException.class
     })
     public ResponseEntity<ErrorMessage> handleServiceError(Exception exception) {
         return ResponseEntity

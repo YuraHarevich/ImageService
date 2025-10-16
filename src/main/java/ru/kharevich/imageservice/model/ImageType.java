@@ -2,5 +2,6 @@ package ru.kharevich.imageservice.model;
 
 public enum ImageType {
     AVATAR,
-    POST_ATTACHMENT
+    POST_ATTACHMENT,
+    SVG
 }

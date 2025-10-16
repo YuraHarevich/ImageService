@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kharevich.imageservice.model.ImageType;
 
+import java.util.List;
 import java.util.UUID;
 
 public record ImageRequest(
@@ -15,7 +16,7 @@ public record ImageRequest(
         UUID parentEntityId,
 
         @NotNull(message = "File is required")
-        MultipartFile file
+        List<MultipartFile> files
 ) {
 
 }

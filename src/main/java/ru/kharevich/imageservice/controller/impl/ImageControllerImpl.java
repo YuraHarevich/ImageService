@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.kharevich.imageservice.controller.api.ImageController;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 import ru.kharevich.imageservice.model.ImageType;
 import ru.kharevich.imageservice.service.ImageService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -52,6 +54,12 @@ public class ImageControllerImpl implements ImageController {
         imageService.deleteById(id);
     }
 
+    @GetMapping("/icons")
+    @ResponseStatus(HttpStatus.OK)
+    public List<FileTransferEntity> downloadSvgIcons() {
+        return imageService.getSvgIcons();
+    }
+
     @DeleteMapping("parent")
     @ResponseStatus(HttpStatus.OK)
     public void deleteImageByParentId(@Valid @RequestParam UUID id) {
@@ -62,8 +70,8 @@ public class ImageControllerImpl implements ImageController {
     public ImageResponse uploadImage(
             @RequestPart("imageType") String imageType,
             @RequestPart("parentEntityId") String parentEntityId,
-            @RequestPart("file") MultipartFile file) {
-        ImageRequest imageRequest = new ImageRequest(ImageType.POST_ATTACHMENT, UUID.fromString(parentEntityId), file);
+            @RequestPart("file") List<MultipartFile> files) {
+        ImageRequest imageRequest = new ImageRequest(ImageType.POST_ATTACHMENT, UUID.fromString(parentEntityId), files);
         return imageService.save(imageRequest);
     }
 

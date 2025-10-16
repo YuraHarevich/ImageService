@@ -3,7 +3,9 @@ package ru.kharevich.imageservice.service;
 import jakarta.validation.Valid;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ImageService {
@@ -19,4 +21,6 @@ public interface ImageService {
     ImageResponse getByParentId(@Valid UUID id);
 
     void deleteByParentId(@Valid UUID id);
+
+    List<FileTransferEntity> getSvgIcons();
 }
