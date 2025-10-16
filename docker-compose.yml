@@ -5,9 +5,9 @@ services:
     container_name: ms_image_sql
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: images
+      POSTGRES_USER: ${POSTGRES_USER:postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:password}
+      POSTGRES_DB: ${POSTGRES_DB:images}
     volumes:
       - images_psql:/var/lib/postgresql/data
     ports:
@@ -20,9 +20,9 @@ services:
     container_name: ms_users_sql
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: users
+      POSTGRES_USER: ${POSTGRES_USER:postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:password}
+      POSTGRES_DB: ${POSTGRES_DB:users}
     volumes:
       - users_psql:/var/lib/postgresql/data
     ports:
@@ -35,9 +35,9 @@ services:
     container_name: ms_posts_sql
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: posts
+      POSTGRES_USER: ${POSTGRES_USER:postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:password}
+      POSTGRES_DB: ${POSTGRES_DB:posts}
     volumes:
       - posts_psql:/var/lib/postgresql/data
     ports:
@@ -47,33 +47,17 @@ services:
     restart: unless-stopped
 
   localstack:
-    container_name: ms_localstack
-    image: localstack/localstack:latest
+    image: localstack/localstack
+    environment:
+      - LS_LOG=info
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-test}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
     ports:
       - "4566:4566"
-    environment:
-      - SERVICES=s3
-      - DEBUG=1
-      - PERSISTENCE=1
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-      - AWS_DEFAULT_REGION=us-east-1
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./localstack_data:/var/lib/localstack"
-      - "./localstack/init-scripts:/etc/localstack/init/ready.d"
       - "./localstack/icons:/etc/localstack/icons"
-    command: >
-      sh -c "
-        echo 'Making scripts executable...' &&
-        find /etc/localstack/init/ready.d -name '*.sh' -exec chmod +x {} \; &&
-        echo 'Starting LocalStack...' &&
-        /usr/bin/localstack start
-      "
-    networks:
-      - microservices-net
-    restart: unless-stopped
+      - "./localstack/init-scripts:/etc/localstack/init/ready.d"
 
 networks:
   microservices-net:
@@ -83,3 +67,4 @@ volumes:
   images_psql:
   users_psql:
   posts_psql:
+  localstack_data:

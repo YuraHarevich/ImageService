@@ -1,6 +1,7 @@
 package ru.kharevich.imageservice.controller.impl;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.kharevich.imageservice.controller.api.ImageController;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.dto.response.PageableResponse;
 import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 import ru.kharevich.imageservice.model.ImageType;
 import ru.kharevich.imageservice.service.ImageService;
@@ -40,6 +42,14 @@ public class ImageControllerImpl implements ImageController {
     @ResponseStatus(HttpStatus.OK)
     public ImageResponse getImageByParent(@RequestParam @Valid UUID id) {
         return imageService.getByParentId(id);
+    }
+
+    @GetMapping("/parent/many")
+    @ResponseStatus(HttpStatus.OK)
+    public PageableResponse<ImageResponse> getImagesByParent(@RequestParam List<UUID> ids,
+                                                             @RequestParam(defaultValue = "0") @Min(0) int page_number,
+                                                             @RequestParam(defaultValue = "10") int size) {
+        return imageService.getManyByParentId(ids, page_number, size);
     }
 
     @GetMapping("url")

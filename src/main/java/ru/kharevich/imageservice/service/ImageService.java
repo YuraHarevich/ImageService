@@ -3,6 +3,7 @@ package ru.kharevich.imageservice.service;
 import jakarta.validation.Valid;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
+import ru.kharevich.imageservice.dto.response.PageableResponse;
 import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface ImageService {
     void deleteByParentId(@Valid UUID id);
 
     List<FileTransferEntity> getSvgIcons();
+
+    PageableResponse<ImageResponse> getManyByParentId(List<UUID> ids, int page_number, int size);
 }

@@ -8,13 +8,15 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+
 @Component
 @Aspect
 @Slf4j
 public class RestTemplateLoggingAspect {
 
     @Pointcut("execution(* org.springframework.web.client.RestTemplate.*(..))")
-    public void restTemplateMethods() {}
+    public void restTemplateMethods() {
+    }
 
     @Around("restTemplateMethods()")
     public Object logRestTemplateCall(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -74,32 +76,30 @@ public class RestTemplateLoggingAspect {
     }
 
     private void logRestTemplateSuccess(String method, String url, Object result, long executionTime) {
-        StringBuilder logMessage = new StringBuilder();
-        logMessage.append("\n✅ REST TEMPLATE SUCCESS RESPONSE\n");
-        logMessage.append("╔═══════════════════════════════════════════════════════════\n");
-        logMessage.append("║ Method: ").append(method).append("\n");
-        logMessage.append("║ URL: ").append(url).append("\n");
-        logMessage.append("║ Execution Time: ").append(executionTime).append("ms\n");
-        logMessage.append("║ Timestamp: ").append(LocalDateTime.now()).append("\n");
-        logMessage.append("║ Response Type: ").append(result != null ? result.getClass().getSimpleName() : "void").append("\n");
-        logMessage.append("╚═══════════════════════════════════════════════════════════");
+        String logMessage = "\n✅ REST TEMPLATE SUCCESS RESPONSE\n" +
+                "╔═══════════════════════════════════════════════════════════\n" +
+                "║ Method: " + method + "\n" +
+                "║ URL: " + url + "\n" +
+                "║ Execution Time: " + executionTime + "ms\n" +
+                "║ Timestamp: " + LocalDateTime.now() + "\n" +
+                "║ Response Type: " + (result != null ? result.getClass().getSimpleName() : "void") + "\n" +
+                "╚═══════════════════════════════════════════════════════════";
 
-        log.info(logMessage.toString());
+        log.info(logMessage);
     }
 
     private void logRestTemplateError(String method, String url, Exception e, long executionTime) {
-        StringBuilder logMessage = new StringBuilder();
-        logMessage.append("\n❌ REST TEMPLATE ERROR RESPONSE\n");
-        logMessage.append("╔═══════════════════════════════════════════════════════════\n");
-        logMessage.append("║ Method: ").append(method).append("\n");
-        logMessage.append("║ URL: ").append(url).append("\n");
-        logMessage.append("║ Execution Time: ").append(executionTime).append("ms\n");
-        logMessage.append("║ Timestamp: ").append(LocalDateTime.now()).append("\n");
-        logMessage.append("║ Error Type: ").append(e.getClass().getSimpleName()).append("\n");
-        logMessage.append("║ Error Message: ").append(e.getMessage()).append("\n");
-        logMessage.append("╚═══════════════════════════════════════════════════════════");
+        String logMessage = "\n❌ REST TEMPLATE ERROR RESPONSE\n" +
+                "╔═══════════════════════════════════════════════════════════\n" +
+                "║ Method: " + method + "\n" +
+                "║ URL: " + url + "\n" +
+                "║ Execution Time: " + executionTime + "ms\n" +
+                "║ Timestamp: " + LocalDateTime.now() + "\n" +
+                "║ Error Type: " + e.getClass().getSimpleName() + "\n" +
+                "║ Error Message: " + e.getMessage() + "\n" +
+                "╚═══════════════════════════════════════════════════════════";
 
-        log.error(logMessage.toString());
+        log.error(logMessage);
     }
 
     private boolean isHttpMethod(String methodName) {

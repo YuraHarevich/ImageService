@@ -10,7 +10,9 @@ public record ImageResponse(
 
         ImageType imageType,
 
-        List<FileTransferEntity> files
+        List<FileTransferEntity> files,
+
+        UUID parentId
 
 ) {
 }

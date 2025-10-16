@@ -5,7 +5,6 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
 import ru.kharevich.imageservice.dto.request.ImageRequest;
 import ru.kharevich.imageservice.dto.response.ImageResponse;
 import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
@@ -24,10 +24,10 @@ import java.util.Objects;
 public interface ImageMapper {
 
     @Mapping(target = "files", expression = "java(mapFileToFileTransferEntities(files,names))")
-    ImageResponse toResponse(ImageType imageType, List<byte[]> files, List<String> names);
+    ImageResponse toResponse(ImageType imageType, List<byte[]> files, List<String> names, UUID parentId);
 
     default List<FileTransferEntity> mapFileToFileTransferEntities(List<byte[]> files, List<String> names) {
-        if (files.isEmpty() || names.isEmpty() || (!Objects.equals(names.size(),files.size()))) {
+        if (files.isEmpty() || names.isEmpty() || (!Objects.equals(names.size(), files.size()))) {
             return Collections.emptyList();
         }
         List<FileTransferEntity> result = new ArrayList<>();

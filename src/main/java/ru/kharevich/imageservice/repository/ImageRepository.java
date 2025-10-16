@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface ImageRepository extends JpaRepository<Image, UUID> {
     Optional<Image> findByUrl(String url);
+
     List<Image> findByParentEntityId(UUID parentId);
 }
