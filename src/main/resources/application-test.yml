@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: image-service-test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_schema: gallery
+  liquibase:
+    analytics-enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5434/testdb
+    username: testuser
+    password: testpass
+
+app:
+  s3:
+    endpoint: http://localhost:4566
+    bucket-name: images-bucket
+    region: us-east-1
+    access-key: test
+    secret-key: test
