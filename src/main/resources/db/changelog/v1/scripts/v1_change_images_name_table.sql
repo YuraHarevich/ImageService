@@ -1,3 +1,0 @@
-ALTER TABLE gallery.images
-ALTER
-COLUMN name TYPE VARCHAR(200);
