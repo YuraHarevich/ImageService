@@ -81,7 +81,7 @@ public class ImageControllerImpl implements ImageController {
             @RequestPart("imageType") String imageType,
             @RequestPart("parentEntityId") String parentEntityId,
             @RequestPart("file") List<MultipartFile> files) {
-        ImageRequest imageRequest = new ImageRequest(ImageType.POST_ATTACHMENT, UUID.fromString(parentEntityId), files);
+        ImageRequest imageRequest = new ImageRequest(ImageType.valueOf(imageType), UUID.fromString(parentEntityId), files);
         return imageService.save(imageRequest);
     }
 

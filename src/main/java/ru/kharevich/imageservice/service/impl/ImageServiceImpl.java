@@ -13,6 +13,7 @@ import ru.kharevich.imageservice.dto.transferObjects.FileTransferEntity;
 import ru.kharevich.imageservice.exception.FileUploadException;
 import ru.kharevich.imageservice.exception.ImageNotFoundException;
 import ru.kharevich.imageservice.model.Image;
+import ru.kharevich.imageservice.model.ImageType;
 import ru.kharevich.imageservice.repository.ImageRepository;
 import ru.kharevich.imageservice.service.ImageService;
 import ru.kharevich.imageservice.util.PageUtils;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -75,6 +77,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public ImageResponse save(ImageRequest imageRequest) {
+        if(imageRequest.imageType().equals(ImageType.AVATAR)){
+            deleteByParentId(imageRequest.parentEntityId());
+        }
         ImageResponse response;
         List<String> names = new ArrayList<>();
         imageRequest.files().forEach(image -> {
@@ -94,7 +99,6 @@ public class ImageServiceImpl implements ImageService {
         return response;
     }
 
-    @Override
     public ImageResponse getByParentId(UUID parentId) {
         List<Image> images = imageRepository.findByParentEntityId(parentId);
         if (images.isEmpty())
@@ -116,7 +120,11 @@ public class ImageServiceImpl implements ImageService {
     public PageableResponse<ImageResponse> getManyByParentId(List<UUID> ids, int page_number, int size) {
         List<ImageResponse> responses = ids.
                 stream()
-                .map(this::getByParentId)
+                .map(id -> {
+                    try {return getByParentId(id);}
+                    catch (ImageNotFoundException e) {return null;}
+                })
+                .filter(Objects::nonNull)
                 .toList();
         Page<ImageResponse> responsePage = PageUtils.convertListToPage(responses, page_number, size);
         return pageMapper.toResponse(responsePage);
