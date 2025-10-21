@@ -10,10 +10,10 @@ spring:
       hibernate:
         default_schema: gallery
   liquibase:
-    analytics-enabled: false
+    enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5434/testdb
+    url: jdbc:postgresql://localhost:5433/images
     username: testuser
     password: testpass
 
