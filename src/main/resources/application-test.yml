@@ -11,12 +11,8 @@ spring:
         default_schema: gallery
   liquibase:
     enabled: false
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/images
-    username: testuser
-    password: testpass
-
+    init:
+      mode: always
 app:
   s3:
     endpoint: http://localhost:4566
