@@ -3,7 +3,7 @@ version: '3.8'
 services:
   images_sql:
     container_name: ms_image_sql
-    image: postgres:13
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -18,7 +18,7 @@ services:
 
   users_sql:
     container_name: ms_users_sql
-    image: postgres:13
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -33,7 +33,7 @@ services:
 
   posts_sql:
     container_name: ms_posts_sql
-    image: postgres:13
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -47,7 +47,8 @@ services:
     restart: unless-stopped
 
   localstack:
-    image: localstack/localstack
+    container_name: ms_localstack
+    image: localstack/localstack:3.0
     environment:
       - LS_LOG=info
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
@@ -59,6 +60,42 @@ services:
       - "./localstack/icons:/etc/localstack/icons"
       - "./localstack/init-scripts:/etc/localstack/init/ready.d"
 
+  mongo_db:
+    container_name: mongo_db
+    image: mongo
+    restart: always
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://localhost/activities
+    ports:
+      - "27017:27017"
+    networks:
+      - microservices-net
+
+  kafka:
+    container_name: ms_kafka
+    image: confluentinc/cp-kafka:8.1.0
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CLUSTER_ID: "38ec6b77-3d4c-4d2b-b9fd-fe26d5e40b61"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+    networks:
+      - microservices-net
+
 networks:
   microservices-net:
     driver: bridge
@@ -68,3 +105,4 @@ volumes:
   users_psql:
   posts_psql:
   localstack_data:
+  kafka-data:

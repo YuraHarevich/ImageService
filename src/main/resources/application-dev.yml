@@ -30,8 +30,3 @@ app:
     region: us-east-1
     access-key: test
     secret-key: test
-
-logging:
-  level:
-    com.example.s3: DEBUG
-    software.amazon.awssdk: DEBUG
